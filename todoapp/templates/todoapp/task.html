@@ -1,0 +1,85 @@
+<!-- todo.html -->
+{% extends 'todoapp/base.html' %}
+
+{% block title %}ToDo List - Мои задачи{% endblock %}
+
+{% block content %}
+	{% include 'todoapp/add_task.html' %}
+
+    <h1>Мои задачи</h1>
+
+    <h2>Список задач</h2>
+
+	<button id="show-completed-btn">Выполненные задачи</button>
+
+	<h3 id="completed-tasks-heading" style="display: none;">Выполненные задачи:</h3>
+
+	<ul id="completed-tasks-list" class="list-group" style="display: none;">
+	    {% for task in tasks %}
+	        {% if task.completed %}
+	        <li class="list-group-item">
+	            <a data-toggle="collapse" href="#task{{ task.id }}" aria-expanded="false" aria-controls="task{{ task.id }}">{{ task.title }}</a>
+	            <div class="collapse" id="task{{ task.id }}">
+	                <p>Описание: {{ task.description }}</p>
+	                <p>Дата создания: {{ task.created_at }}</p>
+	                <p>Выполнено: {{ task.completed }}</p>
+					<form id="updateTaskForm{{ task.id }}" data-url="{% url 'update_task' task.id %}" method="POST">
+						{% csrf_token %}
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" id="completedCheckbox{{ task.id }}" {% if task.completed %}checked{% endif %}>
+							<label class="form-check-label" for="completedCheckbox{{ task.id }}">Сделано</label>
+						</div>
+						<button type="button" class="btn btn-primary" onclick="updateTask(this)" data-task-id="{{ task.id }}">Сохранить</button>
+					</form>
+	                <form id="deleteTaskForm_{{ task.id }}" data-url="{% url 'delete_task' task.id %}" method="POST">
+	                    {% csrf_token %}
+	                    <button type="submit" class="btn btn-danger">Удалить</button>
+	                </form>
+	            </div>
+	        </li>
+	        {% endif %}
+	    {% empty %}
+	    <li class="list-group-item">No completed tasks found.</li>
+	    {% endfor %}
+	</ul>
+
+
+
+
+
+	<h3>Невыполненные задачи:</h3>
+	<ul class="list-group">
+	    {% for task in tasks %}
+	        {% if not task.completed %}
+	        <li class="list-group-item">
+	            <a data-toggle="collapse" href="#task{{ task.id }}" aria-expanded="false" aria-controls="task{{ task.id }}">{{ task.title }}</a>
+	            <div class="collapse" id="task{{ task.id }}">
+	                <p>Описание: {{ task.description }}</p>
+	                <p>Дата создания: {{ task.created_at }}</p>
+	                <p>Выполнено: {{ task.completed }}</p>
+					<form id="updateTaskForm{{ task.id }}" data-url="{% url 'update_task' task.id %}" method="POST">
+						{% csrf_token %}
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" id="completedCheckbox{{ task.id }}" {% if task.completed %}checked{% endif %}>
+							<label class="form-check-label" for="completedCheckbox{{ task.id }}">Сделано</label>
+						</div>
+						<button type="button" class="btn btn-primary" onclick="updateTask(this)" data-task-id="{{ task.id }}">Сохранить</button>
+					</form>
+	                <form id="deleteTaskForm_{{ task.id }}" data-url="{% url 'delete_task' task.id %}" method="POST">
+	                    {% csrf_token %}
+	                    <button type="submit" class="btn btn-danger">Удалить</button>
+	                </form>
+	            </div>
+	        </li>
+	        {% endif %}
+	    {% empty %}
+	    <li class="list-group-item">No incomplete tasks found.</li>
+	    {% endfor %}
+	</ul>
+
+	{% include 'todoapp/scripts/add_task.html' %}
+	{% include 'todoapp/scripts/hide_comp_task.html' %}
+	{% include 'todoapp/scripts/rm_task.html' %}
+	{% include 'todoapp/scripts/change_completed.html' %}
+
+{% endblock %}

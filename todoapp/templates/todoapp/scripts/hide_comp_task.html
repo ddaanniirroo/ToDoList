@@ -1,0 +1,46 @@
+<script>
+	const showCompletedBtn = document.getElementById('show-completed-btn');
+	const completedTasksHeading = document.getElementById('completed-tasks-heading');
+	const completedTasksList = document.getElementById('completed-tasks-list');
+
+	showCompletedBtn.addEventListener('click', function() {
+		if (completedTasksHeading.style.display === 'none') {
+			completedTasksHeading.style.display = 'block';
+			completedTasksList.style.display = 'block';
+			showCompletedBtn.textContent = 'Скрыть выполненные задачи';
+		} else {
+			completedTasksHeading.style.display = 'none';
+			completedTasksList.style.display = 'none';
+			showCompletedBtn.textContent = 'Выполненные задачи';
+	}
+	});
+	const taskCheckboxes = document.querySelectorAll('.task-checkbox');
+
+	taskCheckboxes.forEach(function(checkbox) {
+		checkbox.addEventListener('change', function() {
+			const taskId = this.dataset.taskId;
+			const completed = this.checked;
+
+			fetch(`/task/${taskId}/update_completed/`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-CSRFToken': '{{ csrf_token }}'
+				},
+				body: JSON.stringify({ completed: completed })
+			})
+			.then(function(response) {
+				if (response.ok) {
+					// Обновление успешно выполнено
+					console.log('Task completion updated successfully.');
+				} else {
+					// Обновление завершилось неудачей
+					console.log('Failed to update task completion.');
+				}
+			})
+			.catch(function(error) {
+				console.log('An error occurred while updating task completion:', error);
+			});
+		});
+	});
+</script>

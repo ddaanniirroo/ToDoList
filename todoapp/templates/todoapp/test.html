@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Task List</title>
+</head>
+<body>
+    {% if user.is_authenticated %}
+        <h2>Welcome, {{ user.username }}</h2>
+        <a href="{% url 'logout' %}">Logout</a>
+        <h3>Create New Task</h3>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Create Task</button>
+        </form>
+        <h3>Task List</h3>
+        {% if tasks %}
+            <ul>
+                {% for task in tasks %}
+                    <li>{{ task.title }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No tasks found.</p>
+        {% endif %}
+    {% else %}
+        <h2>Welcome Guest</h2>
+        <a href="{% url 'login' %}?next=/test/">Войти</a> |
+        <a href="{% url 'register' %}">Register</a>
+        <script>
+            setTimeout(function() {
+                window.location.href = "{% url 'home' %}";
+            }, 5000);
+        </script>
+    {% endif %}
+</body>
+</html>

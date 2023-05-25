@@ -1,0 +1,26 @@
+<script>
+    function updateTask(button) {
+        var taskId = button.getAttribute('data-task-id');
+        var url = document.getElementById('updateTaskForm' + taskId).getAttribute('data-url');
+        var completed = document.getElementById('completedCheckbox' + taskId).checked;
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({ completed: completed })
+        })
+        .then(function(response) {
+            if (response.ok) {
+                location.reload();
+            } else {
+                console.log('Ошибка при обновлении задачи');
+            }
+        })
+        .catch(function(error) {
+            console.log('Ошибка при обновлении задачи:', error);
+        });
+    }
+</script>

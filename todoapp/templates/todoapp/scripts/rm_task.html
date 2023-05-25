@@ -1,0 +1,29 @@
+<script>
+    // Обработчик события отправки формы
+    var deleteForms = document.querySelectorAll('[id^="deleteTaskForm_"]');
+    deleteForms.forEach(function(form) {
+        form.addEventListener('submit', function(event) {
+            event.preventDefault(); // Предотвращаем отправку формы
+
+            // Получаем URL для удаления из атрибута data-url
+            var url = this.getAttribute('data-url');
+
+            // Отправляем асинхронный запрос на удаление задачи
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+            .then(function(response) {
+                if (response.ok) {
+                    // Обновляем страницу после успешного удаления
+                    location.reload();
+                }
+            })
+            .catch(function(error) {
+                console.log('Ошибка при удалении задачи:', error);
+            });
+        });
+    });
+</script>

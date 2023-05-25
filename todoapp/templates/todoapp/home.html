@@ -1,0 +1,9 @@
+{% extends 'todoapp/base.html' %}
+
+{% block title %}Домашняя{% endblock %}
+
+<div class="content">
+    {% block content %}
+    <a href="{% url 'task_list' %}">Перейти к задачам</a>
+    {% endblock %}
+</div>
